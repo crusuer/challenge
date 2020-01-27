@@ -31,7 +31,7 @@ public class StarredServiceImpl implements StarredService {
     @Override
     public List<Starred> getStarred(String username) {
         saveRetrievedRepositories(username);
-        return starredRepository.findAll();
+        return starredRepository.findByUsername(username);
     }
 
     @Override
