@@ -48,10 +48,10 @@ public class StarredController {
     }
 
     @ApiOperation(value = "Delete tags of starred repository by id")
-    @DeleteMapping(value = "/starred/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RepositoriesPOJO> deleteTags(@PathVariable Long id, @Valid @RequestBody TagsPOJO tagsPOJO) {
-        RepositoriesPOJO repositoriesPOJO = new RepositoriesPOJO(starredService.deleteTag(id, tagsPOJO));
-        return ResponseEntity.status(HttpStatus.OK).body(repositoriesPOJO);
+    @DeleteMapping(value = "/starred/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteTags(@PathVariable Long id, @Valid @RequestBody TagsPOJO tagsPOJO) {
+        starredService.deleteTag(id, tagsPOJO);
     }
 
     @ApiOperation(value = "Search starred repositories by tag")

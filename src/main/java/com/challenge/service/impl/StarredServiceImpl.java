@@ -72,12 +72,8 @@ public class StarredServiceImpl implements StarredService {
     @Override
     public List<Starred> searchTag(String tag) {
         List<Starred> starredRepos = starredRepository.findAll();
-        for (Starred starred : starredRepos) {
-            if (searchTagsByTag(starred.getTags(), tag)) {
-                continue;
-            }
-            starredRepos.remove(starred);
-        }
+        starredRepos.removeIf(starred -> searchTagsByTag(starred.getTags(), tag));
+
         return starredRepos;
     }
 
@@ -97,7 +93,7 @@ public class StarredServiceImpl implements StarredService {
     }
 
     private boolean searchTagsByTag(Set<String> tags, String tag) {
-        return tags.stream().anyMatch(s -> s.startsWith(tag));
+        return !tags.stream().anyMatch(s -> s.startsWith(tag));
     }
 
     private void saveRetrievedRepositories(String username) {
