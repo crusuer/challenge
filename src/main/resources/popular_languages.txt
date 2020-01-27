@@ -1,0 +1,20 @@
+javascript
+java
+python
+ruby
+css
+php
+c++
+c
+shell
+c#
+objective-c
+r
+kotlin
+go
+perl
+coffeescript
+elixir
+scala
+haskell
+emacs lisp

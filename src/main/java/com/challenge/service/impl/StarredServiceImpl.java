@@ -7,14 +7,19 @@ import com.challenge.pojo.TagUpdatePOJO;
 import com.challenge.pojo.TagsPOJO;
 import com.challenge.repository.StarredRepository;
 import com.challenge.service.StarredService;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kohsuke.github.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class StarredServiceImpl implements StarredService {
@@ -79,11 +84,14 @@ public class StarredServiceImpl implements StarredService {
     @Override
     public List<String> recommendTag(Long id) {
         Starred starred = starredRepository.findById(id).orElseThrow(() -> new StarredNotFoundException(id));
-        List<String> recommendations = new ArrayList<>(Arrays.asList(
-                "javascript", "python", "java", "c++", "swift",
-                "go", "sql", "ruby", "elixir", "php", "kotlin"
-        ));
-
+        //read list of most popular programming languages
+        List<String> recommendations = new ArrayList<>();
+        try {
+            recommendations = FileUtils.readLines(new File("src/main/resources/popular_languages.txt"), "utf-8");
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+        //remove from the list the tags already added
         recommendations.removeAll(starred.getTags());
         return recommendations;
     }
@@ -96,7 +104,7 @@ public class StarredServiceImpl implements StarredService {
 
         try {
             //retrieve starred repos of a User by Github API
-            GitHub github = GitHubBuilder.fromPropertyFile("src/main/resources/github.properties").build();
+            GitHub github = GitHubBuilder.fromEnvironment().build();
             GHUser user = github.getUser(username);
             PagedIterable<GHRepository> starredRepositories = user.listStarredRepositories();
 
