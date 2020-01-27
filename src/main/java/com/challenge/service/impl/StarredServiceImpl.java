@@ -70,8 +70,8 @@ public class StarredServiceImpl implements StarredService {
     }
 
     @Override
-    public List<Starred> searchTag(String tag) {
-        List<Starred> starredRepos = starredRepository.findAll();
+    public List<Starred> searchTag(String username, String tag) {
+        List<Starred> starredRepos = starredRepository.findByUsername(username);
 
         if (!starredRepos.isEmpty()) {
             starredRepos.removeIf(starred -> tagNotFound(starred.getTags(), tag));
@@ -109,7 +109,6 @@ public class StarredServiceImpl implements StarredService {
             GitHub github = GitHubBuilder.fromEnvironment().build();
             GHUser user = github.getUser(username);
             PagedIterable<GHRepository> starredRepositories = user.listStarredRepositories();
-
             //save retrieved repositories in a local database
             for (GHRepository repository : starredRepositories) {
 
@@ -120,6 +119,7 @@ public class StarredServiceImpl implements StarredService {
                     starred.setHtmlUrl(repository.getHtmlUrl().toString());
                     starred.setDescription(repository.getDescription());
                     starred.setLanguage(repository.getLanguage());
+                    starred.setUsername(username);
                     starred.setTags(new HashSet<>());
 
                     starredRepository.save(starred);

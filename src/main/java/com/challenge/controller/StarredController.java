@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.io.IOException;
 
 @RestController
@@ -27,8 +26,8 @@ public class StarredController {
     private StarredService starredService;
 
     @ApiOperation(value = "Retrieving starred repositories of a user")
-    @GetMapping(value = "/starred", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RepositoriesPOJO> starredRepositories(@RequestParam String username) {
+    @GetMapping(value = "/starred/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RepositoriesPOJO> starredRepositories(@PathVariable String username) {
         RepositoriesPOJO repositoriesPOJO = new RepositoriesPOJO(starredService.getStarred(username));
         return ResponseEntity.ok(repositoriesPOJO);
     }
@@ -55,13 +54,13 @@ public class StarredController {
     }
 
     @ApiOperation(value = "Search starred repositories by tag")
-    @GetMapping(value = "/search/{tag}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RepositoriesPOJO> searchStarred(@PathParam("tag") String tag) {
-        RepositoriesPOJO repositoriesPOJO = new RepositoriesPOJO(starredService.searchTag(tag));
+    @GetMapping(value = "/search/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RepositoriesPOJO> searchStarred(@PathVariable String username, @RequestParam String tag) {
+        RepositoriesPOJO repositoriesPOJO = new RepositoriesPOJO(starredService.searchTag(username, tag));
         return ResponseEntity.status(HttpStatus.OK).body(repositoriesPOJO);
     }
 
-    @ApiOperation(value = "Search starred repositories by tag")
+    @ApiOperation(value = "Get a list of recommended tags")
     @GetMapping(value = "/recommendation/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TagsPOJO> recommendTag(@PathVariable Long id) {
         TagsPOJO tagsPOJO = new TagsPOJO();

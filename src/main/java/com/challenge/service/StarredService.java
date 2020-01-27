@@ -15,7 +15,7 @@ public interface StarredService {
 
     Starred deleteTag(Long id, TagsPOJO tagsPOJO);
 
-    List<Starred> searchTag(String tag);
+    List<Starred> searchTag(String username, String tag);
 
     List<String> recommendTag(Long id);
 }
