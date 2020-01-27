@@ -99,7 +99,7 @@ public class StarredServiceImpl implements StarredService {
         if (tags.isEmpty()) {
             return true;
         }
-        return !tags.stream().anyMatch(s -> s.startsWith(tag));
+        return tags.stream().noneMatch(s -> s.startsWith(tag));
     }
 
     private void saveRetrievedRepositories(String username) {

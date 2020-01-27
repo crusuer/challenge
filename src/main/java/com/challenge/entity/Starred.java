@@ -22,7 +22,7 @@ public class Starred {
     @JsonIgnore
     private String username;
     @Column
-    @ElementCollection(targetClass = String.class)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     private Set<String> tags;
 
 }
