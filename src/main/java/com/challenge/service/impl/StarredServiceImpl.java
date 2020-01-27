@@ -72,7 +72,10 @@ public class StarredServiceImpl implements StarredService {
     @Override
     public List<Starred> searchTag(String tag) {
         List<Starred> starredRepos = starredRepository.findAll();
-        starredRepos.removeIf(starred -> searchTagsByTag(starred.getTags(), tag));
+
+        if (!starredRepos.isEmpty()) {
+            starredRepos.removeIf(starred -> tagNotFound(starred.getTags(), tag));
+        }
 
         return starredRepos;
     }
@@ -92,7 +95,10 @@ public class StarredServiceImpl implements StarredService {
         return recommendations;
     }
 
-    private boolean searchTagsByTag(Set<String> tags, String tag) {
+    private boolean tagNotFound(Set<String> tags, String tag) {
+        if (tags.isEmpty()) {
+            return true;
+        }
         return !tags.stream().anyMatch(s -> s.startsWith(tag));
     }
 
